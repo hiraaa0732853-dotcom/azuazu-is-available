@@ -1,0 +1,516 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#07070a" />
+  <meta name="description" content="怖がられがちな、涙もろい話し相手。静かに心を開いていく物語型プロフィール。" />
+  <title>あず- — 怖がられがちな、涙もろい話し相手</title>
+  <style>
+    /* =========================================================
+       EDIT GUIDE
+       1) Main colors: :root variables below
+       2) Profile image: --portrait-position and <img src="profile-image.png">
+       3) Name / copy / links: search for "EDIT:" in this file
+       ========================================================= */
+    :root {
+      --ink-0: #030305;
+      --ink-1: #08080d;
+      --ink-2: #101018;
+      --ink-3: #171720;
+      --violet-black: #15111d;
+      --text: #ece9e7;
+      --muted: #aaa5ab;
+      --faint: #747078;
+      --accent: #c7b27a; /* EDIT: main accent color */
+      --accent-soft: #efe4c2;
+      --wine: #2a151d;
+      --line: rgba(255,255,255,.12);
+      --portrait-position: 50% 18%; /* EDIT: image focal point (x y) */
+      --max: 1180px;
+      --ease: cubic-bezier(.2,.7,.2,1);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; background: var(--ink-0); }
+    body {
+      margin: 0;
+      color: var(--text);
+      background:
+        radial-gradient(80rem 55rem at 75% -10%, rgba(79,62,101,.17), transparent 55%),
+        radial-gradient(55rem 40rem at 20% 45%, rgba(54,45,66,.10), transparent 62%),
+        linear-gradient(180deg, #050507 0%, #09090e 45%, #0d0c11 100%);
+      font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.9;
+      overflow-x: hidden;
+    }
+    body::before {
+      content: "";
+      position: fixed; inset: 0; pointer-events: none; z-index: 100;
+      background:
+        repeating-linear-gradient(0deg, rgba(255,255,255,.014) 0 1px, transparent 1px 4px),
+        radial-gradient(circle at center, transparent 40%, rgba(0,0,0,.48) 100%);
+      opacity: .5;
+      mix-blend-mode: soft-light;
+    }
+    a { color: inherit; }
+    button, a { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+    button { min-width: 44px; min-height: 44px; }
+    .word, .approach, .next-line, .door { user-select:none; -webkit-user-select:none; }
+    :focus-visible { outline: 2px solid var(--accent-soft); outline-offset: 5px; }
+
+    .skip-link {
+      position: fixed; left: 1rem; top: 1rem; z-index: 999;
+      transform: translateY(-180%);
+      background: var(--text); color: var(--ink-0); padding: .6rem 1rem;
+      transition: transform .2s;
+    }
+    .skip-link:focus { transform: translateY(0); }
+
+    .progress {
+      position: fixed; left: 0; top: 0; width: 100%; height: 2px; z-index: 200;
+      background: rgba(255,255,255,.04);
+    }
+    .progress > span { display:block; height:100%; width:0; background: var(--accent); box-shadow: 0 0 18px rgba(199,178,122,.35); }
+
+    .ambient { position: fixed; inset: 0; pointer-events:none; overflow:hidden; z-index:0; }
+    .fog {
+      position:absolute; width:70vw; height:28vw; border-radius:50%; filter: blur(45px);
+      background: rgba(145,132,161,.07); opacity:.7;
+      animation: drift 24s ease-in-out infinite alternate;
+    }
+    .fog.a { left:-20vw; top:10vh; }
+    .fog.b { right:-25vw; top:55vh; animation-duration:31s; animation-delay:-8s; }
+    .fog.c { left:25vw; bottom:-15vw; animation-duration:38s; opacity:.35; }
+    @keyframes drift { to { transform: translate3d(12vw,4vh,0) scale(1.12); } }
+
+    .particles { position:absolute; inset:0; opacity:.55; }
+    .particle {
+      position:absolute; width:2px; height:2px; border-radius:50%; background:rgba(239,228,194,.7);
+      box-shadow: 0 0 8px rgba(239,228,194,.45);
+      animation: rise var(--d) linear infinite; animation-delay: var(--delay);
+    }
+    @keyframes rise { from { transform:translateY(12vh); opacity:0; } 15%{opacity:.7} to{transform:translateY(-110vh);opacity:0;} }
+
+    main { position:relative; z-index:1; }
+    .wrap { width:min(calc(100% - 3rem), var(--max)); margin-inline:auto; }
+    .eyebrow { font-size:.72rem; letter-spacing:.35em; text-transform:uppercase; color:var(--accent); }
+    .display { font-family: "Hiragino Mincho ProN", "Yu Mincho", Georgia, serif; font-weight:400; letter-spacing:.08em; }
+
+    .hero {
+      min-height:100svh; position:relative; display:grid; align-items:end; overflow:hidden;
+      border-bottom:1px solid rgba(255,255,255,.06);
+    }
+    .hero::after {
+      content:""; position:absolute; inset:0; pointer-events:none;
+      background:
+        linear-gradient(90deg, rgba(3,3,5,.97) 0%, rgba(3,3,5,.72) 39%, rgba(3,3,5,.13) 68%, rgba(3,3,5,.52) 100%),
+        linear-gradient(180deg, rgba(3,3,5,.4), transparent 30%, rgba(3,3,5,.92) 100%);
+      transition: opacity 1.2s var(--ease);
+    }
+    .hero.is-open::after { opacity:.72; }
+    .portrait-shell {
+      position:absolute; inset:0 0 0 32%; overflow:hidden;
+      background:
+        radial-gradient(circle at 55% 35%, rgba(166,144,204,.16), transparent 25%),
+        linear-gradient(135deg, #15111d, #07070a 60%);
+    }
+    .portrait-shell::before {
+      content:""; position:absolute; inset:-10%; z-index:2;
+      background:
+        radial-gradient(ellipse at 52% 38%, transparent 0 12%, rgba(0,0,0,.08) 25%, rgba(0,0,0,.48) 65%),
+        linear-gradient(90deg, rgba(3,3,5,.9), transparent 45%);
+      transition: opacity 1.4s var(--ease);
+    }
+    .hero.is-open .portrait-shell::before { opacity:.55; }
+    .portrait {
+      width:100%; height:100%; object-fit:cover; object-position:var(--portrait-position);
+      filter:saturate(.72) brightness(.58) contrast(1.08);
+      transform:scale(1.035);
+      transition: filter 1.5s var(--ease), transform 2s var(--ease);
+    }
+    .hero.is-open .portrait { filter:saturate(.84) brightness(.78) contrast(1.03); transform:scale(1); }
+    .portrait-fallback {
+      position:absolute; inset:0; display:grid; place-items:center; color:rgba(255,255,255,.1);
+      font-family:serif; font-size:clamp(5rem,20vw,16rem); z-index:-1;
+    }
+    .hero-content { position:relative; z-index:4; padding:10rem 0 8vh; max-width:660px; }
+    .hero h1 { margin:.7rem 0 1.6rem; font-size:clamp(4.5rem,13vw,10rem); line-height:.82; }
+    .hero .role { margin:0 0 3.5rem; color:var(--muted); letter-spacing:.08em; }
+    .hero-copy { font-size:clamp(1.25rem,2.5vw,2.05rem); line-height:1.8; max-width:16em; text-wrap:balance; }
+    .hero-copy span { display:block; opacity:0; transform:translateY(12px); animation:reveal 1.2s var(--ease) forwards; }
+    .hero-copy span:nth-child(2) { animation-delay:.75s; color:var(--accent-soft); }
+    @keyframes reveal { to { opacity:1; transform:none; } }
+    .approach {
+      margin-top:2.6rem; display:inline-flex; align-items:center; gap:1rem; border:0; color:var(--text);
+      background:transparent; padding:1rem 0; cursor:pointer; font:inherit; letter-spacing:.12em;
+    }
+    .approach::before { content:""; width:3.2rem; height:1px; background:var(--accent); transition:width .5s var(--ease), box-shadow .5s; }
+    .approach:hover::before, .approach:focus-visible::before, .approach:active::before { width:5rem; box-shadow:0 0 18px rgba(199,178,122,.5); }
+    .approach:active { transform:translateY(1px); }
+    .hero-light {
+      position:absolute; z-index:3; width:42rem; height:42rem; border-radius:50%; pointer-events:none;
+      background:radial-gradient(circle, rgba(239,228,194,.13), transparent 64%); filter:blur(6px);
+      opacity:0; transform:translate(-50%,-50%); transition:opacity .5s;
+    }
+    .hero:hover .hero-light, .hero.touch-light .hero-light { opacity:1; }
+
+    section { position:relative; padding:clamp(7rem,14vw,13rem) 0; }
+    .section-head { max-width:760px; margin-bottom:5rem; }
+    .section-head h2 { font-size:clamp(2.2rem,5vw,4.6rem); line-height:1.25; margin:.7rem 0 0; }
+
+    .impressions { min-height:100svh; display:grid; align-items:center; }
+    .word-field { position:relative; min-height:520px; border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
+    .word {
+      position:absolute; left:var(--x); top:var(--y); transform:translate(-50%,-50%) rotate(var(--r));
+      color:#d6d1d7; letter-spacing:.12em; background:transparent; border:0; cursor:pointer;
+      font-size:clamp(1rem,2.3vw,1.6rem); font-family:inherit; white-space:nowrap;
+      text-shadow:0 0 18px rgba(255,255,255,.06); transition:all .9s var(--ease);
+    }
+    .word::after { content:""; position:absolute; left:0; right:0; bottom:-.45rem; height:1px; background:rgba(255,255,255,.2); transform:scaleX(.35); transition:.8s; }
+    .word:hover::after, .word:focus-visible::after, .word:active::after { transform:scaleX(1); background:var(--accent); }
+    .word:active { color:var(--accent-soft); }
+    .word.changed { color:var(--accent-soft); transform:translate(-50%,-50%) rotate(0deg); text-shadow:0 0 24px rgba(199,178,122,.18); }
+    .word.changed::after { transform:scaleX(0); }
+    .hint { color:var(--faint); font-size:.82rem; letter-spacing:.16em; margin-top:1rem; }
+
+
+    .name-mark { display:block; margin-top:1.1rem; font-family:inherit; font-size:clamp(.85rem,1.5vw,1.15rem); letter-spacing:.16em; color:var(--accent-soft); }
+    .profile-ledger { margin-top:6rem; border-top:1px solid var(--line); }
+    .profile-row { display:grid; grid-template-columns:minmax(8rem,.34fr) 1fr; gap:2rem; padding:2rem 0; border-bottom:1px solid var(--line); }
+    .profile-label { color:var(--accent); font-size:.72rem; letter-spacing:.24em; text-transform:uppercase; }
+    .profile-value { margin:0; color:#d8d4d5; }
+    .listener-voice { margin-top:5rem; padding-left:clamp(1.5rem,5vw,5rem); border-left:1px solid rgba(199,178,122,.35); }
+    .listener-voice blockquote { margin:0; max-width:42rem; font-family:"Hiragino Mincho ProN","Yu Mincho",serif; font-size:clamp(1.2rem,2.4vw,1.8rem); line-height:2; color:var(--accent-soft); }
+    .listener-voice cite { display:block; margin-top:1.5rem; color:var(--faint); font-style:normal; letter-spacing:.12em; font-size:.78rem; }
+
+    .truth-grid { display:grid; grid-template-columns:minmax(220px,.7fr) minmax(0,1.3fr); gap:clamp(3rem,8vw,9rem); align-items:start; }
+    .truth-side { position:sticky; top:20vh; }
+    .truth-side .mark { font-size:clamp(5rem,12vw,10rem); color:rgba(199,178,122,.09); line-height:1; }
+    .truth-text { font-family:"Hiragino Mincho ProN","Yu Mincho",serif; font-size:clamp(1.15rem,2vw,1.55rem); }
+    .breath { opacity:.12; transform:translateY(24px); transition:opacity 1s var(--ease), transform 1s var(--ease); margin:0 0 2.3rem; }
+    .breath.visible { opacity:1; transform:none; }
+
+    .crystal-wrap { display:grid; place-items:center; padding:6rem 0 2rem; }
+    .crystal {
+      --open:0;
+      width:min(44vw,320px); aspect-ratio:1; position:relative; filter:drop-shadow(0 28px 70px rgba(0,0,0,.7));
+    }
+    .crystal::before, .crystal::after {
+      content:""; position:absolute; inset:10%; clip-path:polygon(50% 0, 87% 23%, 100% 67%, 62% 100%, 19% 88%, 0 44%, 21% 12%);
+    }
+    .crystal::before {
+      background:
+        linear-gradient(130deg, rgba(255,255,255,.07), transparent 24%),
+        linear-gradient(315deg, #09090d 12%, #22202a 46%, #050507 72%);
+      box-shadow:inset 0 0 0 1px rgba(255,255,255,.07);
+    }
+    .crystal::after {
+      inset:22%; background:radial-gradient(circle, rgba(239,228,194,calc(.08 + var(--open)*.38)), transparent 67%);
+      filter:blur(calc(18px - var(--open)*8px)); transform:scale(calc(.6 + var(--open)*.45));
+    }
+    .crack { position:absolute; z-index:3; left:50%; top:18%; width:2px; height:65%; transform-origin:top; transform:rotate(11deg) scaleY(calc(.08 + var(--open)*.92)); background:linear-gradient(transparent, rgba(239,228,194,.85), transparent); box-shadow:0 0 calc(4px + var(--open)*12px) rgba(239,228,194,.65); }
+    .crack::before, .crack::after { content:""; position:absolute; width:40px; height:1px; background:rgba(239,228,194,.65); top:42%; left:0; transform-origin:left; }
+    .crack::before { transform:rotate(42deg) scaleX(var(--open)); }
+    .crack::after { transform:rotate(-33deg) scaleX(calc(var(--open)*.75)); top:65%; }
+
+    .dialogue { max-width:850px; margin-inline:auto; }
+    .bubble { border-left:1px solid var(--line); padding:1rem 0 1rem 2rem; margin:0 0 2rem; opacity:.25; transition:opacity .7s, border-color .7s; }
+    .bubble.active { opacity:1; border-color:var(--accent); }
+    .speaker { color:var(--accent); font-size:.72rem; letter-spacing:.25em; margin-bottom:.35rem; }
+    .answer { display:none; font-size:clamp(1.05rem,2vw,1.35rem); }
+    .answer.show { display:block; animation:answer .7s var(--ease) both; }
+    @keyframes answer { from{opacity:0;transform:translateY(10px)} }
+    .next-line { display:inline-flex; align-items:center; gap:.8rem; background:transparent; border:1px solid var(--line); color:var(--text); padding:.8rem 1rem; cursor:pointer; font:inherit; }
+    .next-line:hover, .next-line:focus-visible, .next-line:active { border-color:var(--accent); }
+    .next-line:active { transform:translateY(1px); }
+
+    .tear { width:8px; height:12px; margin:7rem auto 0; border-radius:70% 30% 60% 40%; transform:rotate(45deg); background:var(--accent-soft); box-shadow:0 0 18px rgba(239,228,194,.45); animation:tear 4s ease-in-out infinite; }
+    @keyframes tear { 0%,60%{opacity:0;transform:translateY(-18px) rotate(45deg)} 75%{opacity:.8} 100%{opacity:0;transform:translateY(34px) rotate(45deg)} }
+
+    .invitation { min-height:100svh; display:grid; place-items:center; text-align:center; overflow:hidden; }
+    .invitation::before { content:""; position:absolute; width:70vw; height:70vw; max-width:900px; max-height:900px; border-radius:50%; background:radial-gradient(circle, rgba(199,178,122,.11), transparent 66%); filter:blur(8px); }
+    .invite-inner { position:relative; max-width:780px; }
+    .invite-inner h2 { font-size:clamp(2.5rem,7vw,6rem); line-height:1.3; margin:0 0 2.5rem; }
+    .invite-copy { color:#d2ced0; font-size:clamp(1rem,1.8vw,1.2rem); }
+    .closing { font-size:clamp(1.4rem,3vw,2rem); color:var(--accent-soft); margin:4rem 0; }
+    .links { display:flex; justify-content:center; gap:1rem; flex-wrap:wrap; }
+    .door {
+      display:inline-flex; align-items:center; justify-content:center; min-width:200px; min-height:54px;
+      border:1px solid rgba(199,178,122,.45); text-decoration:none; letter-spacing:.12em; position:relative; overflow:hidden;
+    }
+    .door::before { content:""; position:absolute; inset:0; background:var(--accent); transform:translateY(102%); transition:transform .55s var(--ease); }
+    .door span { position:relative; z-index:1; }
+    .door:hover::before, .door:focus-visible::before, .door:active::before { transform:none; }
+    .door:hover, .door:focus-visible, .door:active { color:#0a0908; }
+    .door.secondary { border-color:var(--line); color:var(--muted); }
+    footer { position:relative; z-index:2; padding:2rem; text-align:center; color:var(--faint); font-size:.75rem; letter-spacing:.12em; }
+
+    @media (max-width: 760px) {
+      .wrap { width:min(calc(100% - 2rem), var(--max)); }
+      .hero { align-items:end; }
+      .portrait-shell { inset:0 0 22% 8%; }
+      .portrait { object-position:50% 12%; }
+      .hero::after { background:linear-gradient(180deg, rgba(3,3,5,.25), rgba(3,3,5,.16) 38%, rgba(3,3,5,.94) 77%, #030305 100%); }
+      .hero-content { padding:62vh 0 8vh; }
+      .hero h1 { font-size:clamp(4rem,24vw,7rem); }
+      .hero-copy { font-size:1.15rem; }
+      .truth-grid { grid-template-columns:1fr; }
+      .profile-row { grid-template-columns:1fr; gap:.5rem; }
+      .truth-side { position:static; }
+      .word-field { min-height:640px; }
+      .word { font-size:.96rem; padding:.65rem .8rem; min-height:48px; }
+      .approach { min-height:52px; padding:1rem .25rem; }
+      .next-line { width:100%; min-height:54px; justify-content:center; }
+      .door { width:100%; min-height:56px; }
+      .links { width:100%; }
+      .hero-light { width:26rem; height:26rem; }
+      .hint::after { content:" タップすると言葉が変わります。"; }
+      .crystal { width:min(74vw,300px); }
+    }
+
+    @media (hover: none) and (pointer: coarse) {
+      .hero-light { opacity:.45; }
+      .word::after { transform:scaleX(.55); }
+      .word:active { transform:translate(-50%,-50%) rotate(0deg) scale(.98); }
+      .door::before { transition-duration:.28s; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior:auto; }
+      *, *::before, *::after { animation-duration:.001ms !important; animation-iteration-count:1 !important; transition-duration:.001ms !important; }
+      .breath { opacity:1; transform:none; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">本文へ移動</a>
+  <div class="progress" aria-hidden="true"><span></span></div>
+  <div class="ambient" aria-hidden="true">
+    <div class="fog a"></div><div class="fog b"></div><div class="fog c"></div>
+    <div class="particles" id="particles"></div>
+  </div>
+
+  <main id="main">
+    <section class="hero" id="hero" aria-labelledby="hero-title">
+      <div class="portrait-shell" aria-hidden="true">
+        <div class="portrait-fallback">静</div>
+        <!-- EDIT: Change the image filename here. Keep profile-image.png beside this HTML file. -->
+        <img class="portrait" src="profile-image.png" alt="黒い衣装をまとい、静かにこちらを見つめる配信者" onerror="this.style.display='none'" />
+      </div>
+      <div class="hero-light" id="heroLight"></div>
+      <div class="wrap">
+        <div class="hero-content">
+          <p class="eyebrow">Quiet talk / late night</p>
+          <!-- EDIT: Streamer name -->
+          <h1 class="display" id="hero-title">あず<span class="name-mark"></span></h1>
+          <!-- EDIT: Role -->
+          <p class="role">静かで感情豊かな、話し相手</p>
+          <p class="hero-copy display">
+            優しく見せるのは、得意じゃない。<br>
+            優しくすることなら、たぶんできる。
+          </p>
+          <button class="approach" id="approach" type="button" aria-controls="impressions">それでも、話しかける</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="impressions" id="impressions" aria-labelledby="impression-title">
+      <div class="wrap">
+        <header class="section-head">
+          <p class="eyebrow">First impression</p>
+          <h2 class="display" id="impression-title">最初に見えるものは、全部ではない。</h2>
+        </header>
+        <div class="word-field" id="wordField" aria-label="第一印象の言葉。各言葉を押すと本当の印象へ変化します。">
+          <button class="word" style="--x:18%;--y:26%;--r:-5deg" data-after="枠はのんびり">怖そう</button>
+          <button class="word" style="--x:70%;--y:18%;--r:4deg" data-after="たまにシャーシャー">怒っている？</button>
+          <button class="word" style="--x:83%;--y:58%;--r:-3deg" data-after="情が深くて、誰かのために泣く">強そう</button>
+          <button class="word" style="--x:34%;--y:70%;--r:5deg" data-after="かわいい、美人、優しいの三拍子">近づきにくい</button>
+          <button class="word" style="--x:52%;--y:44%;--r:-2deg" data-after="唯一無二の、最高の推し">目が合うと緊張する</button>
+        </div>
+        <p class="hint">言葉に触れてください。見え方が、少し変わります。</p>
+      </div>
+    </section>
+
+    <section aria-labelledby="truth-title">
+      <div class="wrap truth-grid">
+        <div class="truth-side">
+          <p class="eyebrow">The truth beneath</p>
+          <h2 class="display" id="truth-title">優しく見せるのは、<br>得意じゃない。</h2>
+          <div class="mark" aria-hidden="true">“</div>
+        </div>
+        <!-- EDIT: Self-introduction text -->
+        <div class="truth-text">
+          <p class="breath">名前は、あず<br>6月26日生まれ、あずらんど出身</p>
+          <p class="breath">静かに見えるかもしれないけれど、感情はかなり豊か。<br>楽しかったことも、出会えた人も、思い出として大切にしています。</p>
+          <p class="breath">布団と、じゃがりこと、ツナマヨと、お好み焼きが好き。<br>蜘蛛と納豆は苦手です。</p>
+          <p class="breath">ご飯を忘れることがあります。<br>そして、眠くなったら寝ます。そこは、たぶん誰にも止められません。</p>
+          <p class="breath">ここでは、無理に面白いことを言わなくても大丈夫。<br>今日あったことを、少しだけ話してくれたら嬉しいです。</p>
+        </div>
+      </div>
+      <div class="wrap">
+        <div class="profile-ledger" aria-label="あずのプロフィール">
+          <div class="profile-row"><div class="profile-label">Birthday</div><p class="profile-value">6月26日生まれ。出身は「あずらんど」。</p></div>
+          <div class="profile-row"><div class="profile-label">Likes</div><p class="profile-value">布団、じゃがりこ、ツナマヨ、お好み焼き</p></div>
+          <div class="profile-row"><div class="profile-label">Dislikes</div><p class="profile-value">蜘蛛、納豆</p></div>
+          <div class="profile-row"><div class="profile-label">Nature</div><p class="profile-value">静かで感情豊か。思い出を大切にして、眠くなったら素直に寝る。</p></div>
+        </div>
+        <div class="listener-voice">
+          <blockquote>「いいところも、悪いところも、全部ひっくるめて最高の配信者。唯一無二の、俺の推し。」</blockquote>
+          <cite>— リスナーから届いた言葉</cite>
+        </div>
+      </div>
+      <div class="crystal-wrap" aria-label="心を表す黒い結晶。スクロールに応じて内側の光が見えてきます。">
+        <div class="crystal" id="crystal" aria-hidden="true"><span class="crack"></span></div>
+      </div>
+    </section>
+
+    <section aria-labelledby="talk-title">
+      <div class="wrap">
+        <header class="section-head">
+          <p class="eyebrow">What happens here</p>
+          <h2 class="display" id="talk-title">配信というより、夜更けの会話に近い。</h2>
+        </header>
+        <div class="dialogue" id="dialogue">
+          <div class="bubble active">
+            <div class="speaker">YOU</div>
+            <div>「どんな配信をしているの？」</div>
+          </div>
+          <div class="bubble"><div class="speaker">あず</div><div class="answer">「ほとんど雑談です。みんなと話す時間が、いちばん好き。」</div></div>
+          <div class="bubble"><div class="speaker">あず</div><div class="answer">「くだらないことで笑ったり、思い出になる瞬間を一緒に増やしたり。」</div></div>
+          <div class="bubble"><div class="speaker">あず</div><div class="answer">「声は眠くなるって言われます。笑い方は……少し独特らしいです。」</div></div>
+          <div class="bubble"><div class="speaker">あず</div><div class="answer">「ギフトにも、優しい言葉にも弱いです。泣いていたら……見なかったことにしてください。」</div></div>
+          <button class="next-line" id="nextLine" type="button">覗いてみる <span aria-hidden="true">→</span></button>
+        </div>
+        <div class="tear" aria-hidden="true"></div>
+      </div>
+    </section>
+
+    <section class="invitation" aria-labelledby="invite-title">
+      <div class="wrap invite-inner">
+        <p class="eyebrow">An invitation, not a demand</p>
+        <h2 class="display" id="invite-title">話したい時に、<br>来てください。</h2>
+        <div class="invite-copy">
+          <p>話すことがない日は、聞いているだけでも大丈夫です。</p>
+          <p>天使とか、イケメンとか、優しいとか。<br>たくさんの言葉をもらったぶん、私もあなたとの時間を大切にしたいです。</p>
+        </div>
+        <p class="closing display">今日も、ここで待っています。</p>
+        <div class="links">
+          <!-- EDIT: Replace # with the streaming URL -->
+          <a class="door" href="#" aria-label="配信ページを開く"><span>あずの所へ</span></a>
+          <!-- EDIT: Replace # with the SNS URL -->
+          <a class="door secondary" href="#" aria-label="SNSを開く"><span>覗いてみる</span></a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>© <span id="year"></span> あず- — Quietly waiting.</footer>
+
+  <script>
+    (() => {
+      'use strict';
+      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const hero = document.getElementById('hero');
+      const approach = document.getElementById('approach');
+      const heroLight = document.getElementById('heroLight');
+      const progress = document.querySelector('.progress span');
+      const crystal = document.getElementById('crystal');
+      const words = [...document.querySelectorAll('.word')];
+      const breaths = [...document.querySelectorAll('.breath')];
+      const nextLine = document.getElementById('nextLine');
+      const answers = [...document.querySelectorAll('.answer')];
+      const bubbles = [...document.querySelectorAll('.bubble')];
+      let answerIndex = 0;
+
+      document.getElementById('year').textContent = new Date().getFullYear();
+
+      // Decorative particles, limited to keep the page calm and performant.
+      const particles = document.getElementById('particles');
+      if (!reduceMotion && particles) {
+        for (let i = 0; i < 28; i++) {
+          const p = document.createElement('i');
+          p.className = 'particle';
+          p.style.left = `${Math.random() * 100}%`;
+          p.style.top = `${80 + Math.random() * 40}%`;
+          p.style.setProperty('--d', `${16 + Math.random() * 22}s`);
+          p.style.setProperty('--delay', `${-Math.random() * 30}s`);
+          p.style.opacity = String(.25 + Math.random() * .55);
+          particles.appendChild(p);
+        }
+      }
+
+      approach.addEventListener('click', () => {
+        hero.classList.add('is-open');
+        document.getElementById('impressions').scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth' });
+      });
+
+      hero.addEventListener('pointermove', (event) => {
+        if (reduceMotion) return;
+        const rect = hero.getBoundingClientRect();
+        heroLight.style.left = `${event.clientX - rect.left}px`;
+        heroLight.style.top = `${event.clientY - rect.top}px`;
+      });
+
+      // Touch devices: reveal the same subtle light with a finger.
+      const moveHeroLight = (clientX, clientY) => {
+        if (reduceMotion) return;
+        const rect = hero.getBoundingClientRect();
+        heroLight.style.left = `${clientX - rect.left}px`;
+        heroLight.style.top = `${clientY - rect.top}px`;
+        hero.classList.add('touch-light');
+      };
+      hero.addEventListener('touchstart', (event) => {
+        const touch = event.touches[0];
+        if (touch) moveHeroLight(touch.clientX, touch.clientY);
+      }, { passive:true });
+      hero.addEventListener('touchmove', (event) => {
+        const touch = event.touches[0];
+        if (touch) moveHeroLight(touch.clientX, touch.clientY);
+      }, { passive:true });
+      hero.addEventListener('touchend', () => {
+        window.setTimeout(() => hero.classList.remove('touch-light'), 650);
+      }, { passive:true });
+
+      words.forEach((word) => {
+        word.addEventListener('click', () => {
+          if (word.classList.contains('changed')) return;
+          word.classList.add('changed');
+          word.textContent = word.dataset.after || word.textContent;
+        });
+      });
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) entry.target.classList.add('visible');
+        });
+      }, { threshold: .42 });
+      breaths.forEach((p) => observer.observe(p));
+
+      nextLine.addEventListener('click', () => {
+        if (answerIndex >= answers.length) return;
+        answers[answerIndex].classList.add('show');
+        bubbles[answerIndex + 1].classList.add('active');
+        answerIndex += 1;
+        if (answerIndex >= answers.length) {
+          nextLine.textContent = '……少し、静かに笑う';
+          nextLine.disabled = true;
+          nextLine.style.opacity = '.55';
+        } else {
+          nextLine.innerHTML = 'もう少し聞く <span aria-hidden="true">→</span>';
+        }
+      });
+
+      const onScroll = () => {
+        const max = document.documentElement.scrollHeight - window.innerHeight;
+        const ratio = max > 0 ? Math.min(1, window.scrollY / max) : 0;
+        progress.style.width = `${ratio * 100}%`;
+        crystal.style.setProperty('--open', String(Math.min(.82, Math.max(0, (ratio - .23) * 1.45))));
+        if (ratio > .035) hero.classList.add('is-open');
+      };
+      window.addEventListener('scroll', onScroll, { passive: true });
+      onScroll();
+    })();
+  </script>
+</body>
+</html>
