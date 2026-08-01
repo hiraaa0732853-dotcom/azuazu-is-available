@@ -124,7 +124,7 @@
     }
     .hero.is-open .portrait-shell::before { opacity:.55; }
     .portrait {
-      width:100%; height:100%; object-fit:cover; object-position:var(--portrait-position);
+      width:100%; height:100%; object-fit:contain; object-position:center top;
       filter:saturate(.72) brightness(.58) contrast(1.08);
       transform:scale(1.035);
       transition: filter 1.5s var(--ease), transform 2s var(--ease);
@@ -180,7 +180,22 @@
 
     .name-mark { display:block; margin-top:1.1rem; font-family:inherit; font-size:clamp(.85rem,1.5vw,1.15rem); letter-spacing:.16em; color:var(--accent-soft); }
     .profile-visual { margin:6rem auto 0; width:min(100%, 760px); position:relative; overflow:hidden; border:1px solid var(--line); background:#08080d; }
-    .profile-visual img { display:block; width:100%; height:auto; max-height:760px; object-fit:cover; object-position:center 18%; filter:saturate(.78) brightness(.72) contrast(1.05); }
+    .profile-visual{
+  background:
+    radial-gradient(circle at 50% 20%, rgba(170,210,255,.08), transparent 60%),
+    #07070a;
+}
+.profile-visual img{
+  display:block;
+  width:100%;
+  max-height:none;
+  aspect-ratio:2/3;
+  object-fit:contain;
+  object-position:center;
+  padding:2rem;
+  filter:saturate(.82) brightness(.82) contrast(1.03)
+         drop-shadow(0 0 45px rgba(170,210,255,.18));
+}
     .profile-visual::after { content:""; position:absolute; inset:0; pointer-events:none; background:linear-gradient(180deg, transparent 55%, rgba(3,3,5,.62)); }
     .profile-ledger { margin-top:6rem; border-top:1px solid var(--line); }
     .profile-row { display:grid; grid-template-columns:minmax(8rem,.34fr) 1fr; gap:2rem; padding:2rem 0; border-bottom:1px solid var(--line); }
@@ -793,6 +808,53 @@ section[aria-labelledby="talk-title"] .section-head{
   }
 }
 
+
+/* === Final A3 full-image display: no cropping === */
+.transition-visual{
+  width:min(100%,700px);
+  margin:5rem auto 0;
+  padding:clamp(1rem,3vw,2.5rem);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:visible;
+  background:
+    radial-gradient(circle at 50% 35%, rgba(170,210,255,.12), transparent 68%),
+    linear-gradient(180deg,#06070b,#0b0c12);
+  border:1px solid var(--line);
+}
+
+.transition-visual .transition-image{
+  display:block;
+  width:auto;
+  max-width:100%;
+  height:auto;
+  max-height:none;
+  aspect-ratio:auto;
+  object-fit:contain;
+  object-position:center;
+  padding:0;
+  filter:
+    saturate(.9)
+    brightness(.92)
+    contrast(1.04)
+    drop-shadow(0 0 60px rgba(175,215,255,.22));
+}
+
+@media (max-width:760px){
+  .transition-visual{
+    width:100%;
+    margin-top:3.5rem;
+    padding:1rem;
+  }
+
+  .transition-visual .transition-image{
+    width:100%;
+    max-width:100%;
+    height:auto;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -881,7 +943,7 @@ section[aria-labelledby="talk-title"] .section-head{
       <div class="wrap">
         <figure class="transition-visual">
           <!-- EDIT: 黒猫の代わりに表示する画像。A3.jpegを同じ場所へアップロードしてください -->
-          <img class="portrait" src="https://hiraaa0732853-dotcom.github.io/azuazu-is-available/A3.jpeg?v=2" alt="あずのイメージ画像">
+          <img class="transition-image" src="https://hiraaa0732853-dotcom.github.io/azuazu-is-available/A3.jpeg?v=2" alt="あずのイメージ画像">
         </figure>
       </div>
     </section>
